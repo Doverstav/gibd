@@ -5,12 +5,14 @@ Copyright © 2022 Pontus Doverstav <doverstav@gmail.com>
 package cmd
 
 import (
+	"fmt"
 	"os"
+	"os/exec"
+	"strings"
 
+	"github.com/AlecAivazis/survey/v2"
 	"github.com/spf13/cobra"
 )
-
-
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -24,7 +26,29 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
+	RunE: func(cmd *cobra.Command, args []string) error {
+		out, err := exec.Command("git", "branch").CombinedOutput()
+		if err != nil {
+			fmt.Println(string(out))
+			return err
+		}
+
+		fmt.Println(string(out))
+
+		result := ""
+		survey.AskOne(&survey.Input{Message: "Test Survey"}, &result)
+		fmt.Println(result)
+
+		resultArray := []string{}
+		survey.AskOne(&survey.MultiSelect{
+			Message: "Select multiple",
+			Options: strings.Split(string(out), "\n"),
+		}, &resultArray)
+
+		fmt.Println(resultArray)
+
+		return nil
+	},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -47,5 +71,3 @@ func init() {
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
-
-
