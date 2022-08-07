@@ -5,9 +5,9 @@ Copyright © 2022 Pontus Doverstav <doverstav@gmail.com>
 package cmd
 
 import (
-	"fmt"
 	"os"
 
+	"github.com/AlecAivazis/survey/v2"
 	"github.com/doverstav/gibd/helpers"
 	"github.com/spf13/cobra"
 )
@@ -26,21 +26,17 @@ to quickly create a Cobra application.`,
 	// has an action associated with it:
 	RunE: func(cmd *cobra.Command, args []string) error {
 		branches, _ := helpers.GetBranchesWithRemoteStatus()
-
-		fmt.Println(branches)
-		fmt.Println(len(branches))
+		branchNames := helpers.GetBranchNames(branches)
 
 		// result := ""
 		// survey.AskOne(&survey.Input{Message: "Test Survey"}, &result)
 		// fmt.Println(result)
 
-		// resultArray := []string{}
-		// survey.AskOne(&survey.MultiSelect{
-		// 	Message: "Select multiple",
-		// 	Options: strings.Split(string(out), "\n"),
-		// }, &resultArray)
-
-		// fmt.Println(resultArray)
+		resultArray := []string{}
+		survey.AskOne(&survey.MultiSelect{
+			Message: "Select multiple",
+			Options: branchNames,
+		}, &resultArray)
 
 		return nil
 	},
