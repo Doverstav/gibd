@@ -7,10 +7,8 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"os/exec"
-	"strings"
 
-	"github.com/AlecAivazis/survey/v2"
+	"github.com/doverstav/gibd/helpers"
 	"github.com/spf13/cobra"
 )
 
@@ -27,25 +25,22 @@ to quickly create a Cobra application.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	RunE: func(cmd *cobra.Command, args []string) error {
-		out, err := exec.Command("git", "branch").CombinedOutput()
-		if err != nil {
-			fmt.Println(string(out))
-			return err
-		}
+		branches, _ := helpers.GetBranchesWithRemoteStatus()
 
-		fmt.Println(string(out))
+		fmt.Println(branches)
+		fmt.Println(len(branches))
 
-		result := ""
-		survey.AskOne(&survey.Input{Message: "Test Survey"}, &result)
-		fmt.Println(result)
+		// result := ""
+		// survey.AskOne(&survey.Input{Message: "Test Survey"}, &result)
+		// fmt.Println(result)
 
-		resultArray := []string{}
-		survey.AskOne(&survey.MultiSelect{
-			Message: "Select multiple",
-			Options: strings.Split(string(out), "\n"),
-		}, &resultArray)
+		// resultArray := []string{}
+		// survey.AskOne(&survey.MultiSelect{
+		// 	Message: "Select multiple",
+		// 	Options: strings.Split(string(out), "\n"),
+		// }, &resultArray)
 
-		fmt.Println(resultArray)
+		// fmt.Println(resultArray)
 
 		return nil
 	},
