@@ -13,7 +13,7 @@ func GetBranchNames(branches []string) []string {
 		fmt.Println(splitString)
 		branchRef := splitString[0]
 
-		branchName := strings.TrimPrefix(branchRef, "refs/heads/")
+		branchName := strings.TrimPrefix(strings.TrimSpace(branchRef), "refs/heads/")
 		branchNames = append(branchNames, branchName)
 	}
 

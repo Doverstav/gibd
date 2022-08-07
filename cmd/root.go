@@ -5,6 +5,7 @@ Copyright © 2022 Pontus Doverstav <doverstav@gmail.com>
 package cmd
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/AlecAivazis/survey/v2"
@@ -25,14 +26,43 @@ to quickly create a Cobra application.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	RunE: func(cmd *cobra.Command, args []string) error {
+		// Get all branch refs
 		branches, _ := helpers.GetBranchesWithRemoteStatus()
+		// Extract all names
 		branchNames := helpers.GetBranchNames(branches)
 
+		// Ask what branches to delete
 		branchesToDelete := []string{}
 		survey.AskOne(&survey.MultiSelect{
 			Message: "Select multiple",
 			Options: branchNames,
 		}, &branchesToDelete)
+
+		// For each branch
+		for _, branch := range branchesToDelete {
+			fmt.Printf("Deleting branch %s\n", branch)
+			// Try to delete it
+			output, err := helpers.DeleteBranch(branch)
+			if err != nil {
+				// If that fails, display error output
+				fmt.Printf("Got this error when deleting branch %s:\n"+"%s\n", branch, output)
+
+				// Ask if user wants to attempt a force delete
+				tryForce := false
+				survey.AskOne(&survey.Confirm{
+					Message: "Do you wish to try a force delete?",
+				}, &tryForce)
+
+				// If yes
+				if tryForce {
+					// Try to force delete
+					output, err = helpers.ForceDeleteBranch(branch)
+					if err != nil {
+						fmt.Printf("Failed to delete branch %s with error %s", branch, output)
+					}
+				}
+			}
+		}
 
 		return nil
 	},
