@@ -28,15 +28,11 @@ to quickly create a Cobra application.`,
 		branches, _ := helpers.GetBranchesWithRemoteStatus()
 		branchNames := helpers.GetBranchNames(branches)
 
-		// result := ""
-		// survey.AskOne(&survey.Input{Message: "Test Survey"}, &result)
-		// fmt.Println(result)
-
-		resultArray := []string{}
+		branchesToDelete := []string{}
 		survey.AskOne(&survey.MultiSelect{
 			Message: "Select multiple",
 			Options: branchNames,
-		}, &resultArray)
+		}, &branchesToDelete)
 
 		return nil
 	},

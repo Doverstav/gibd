@@ -21,3 +21,7 @@ func GetBranchesWithRemoteStatus() ([]string, error) {
 
 	return outArray, nil
 }
+
+// func DeleteBranch(branchName string) (error) {
+// 	gitCmd := exec.Command("git", "branch", "-d", branchName)
+// }
