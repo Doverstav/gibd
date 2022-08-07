@@ -1,22 +1,28 @@
 #!/bin/bash
+set -e
 
 echo "Setting up test branches"
 
 # Setup branch that is only local
-git branch localOnly
+echo "Creating local only branch"
+git branch localOnly &> /dev/null
 
 # Setup branch with remote existing
-git branch remoteExisting
-git push -u origin remoteExisting
+echo "Creating branch with remote existing"
+git branch remoteExisting &> /dev/null
+git push -u origin remoteExisting &> /dev/null
 
 # Setup branch that has remote gone
-git branch remoteDeleted
-git push -u origin remoteDeleted
-git push -d origin remoteDeleted
+echo "Creating branch with remote gone"
+git branch remoteDeleted &> /dev/null
+git push -u origin remoteDeleted &> /dev/null
+git push -d origin remoteDeleted &> /dev/null
 
 # Setup branch that gives merged warning
-git checkout -b mergeWarning
-git commit -m "Test" --allow-empty
+echo "Creating branch with merge warning"
+git checkout -b mergeWarning &> /dev/null
+git commit -m "Test" --allow-empty &> /dev/null
 
 # Return to master
-git checkout master
+echo "Returning to master"
+git checkout master &> /dev/null
