@@ -30,6 +30,13 @@ git checkout -b mergeWarning &> /dev/null
 git commit -m "Test" --allow-empty &> /dev/null
 git checkout master &> /dev/null
 
+# Setup branch with remote status ahead
+echo "Creating branch that is ahead of remote"
+git checkout -b aheadOfRemote
+git push -u origin aheadOfRemote
+git commit -m "Test" --allow-empty
+git checkout master
+
 # Return to master
 echo "Returning to master"
 git checkout master &> /dev/null
