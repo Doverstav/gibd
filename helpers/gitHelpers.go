@@ -22,6 +22,19 @@ func GetBranchesWithRemoteStatus() ([]string, error) {
 	return outArray, nil
 }
 
+func GetDefaultBranchRef() (string, error) {
+	// TODO Allow user to specify remote (is hardcoded to origin now)
+	gitCmd := exec.Command("git", "symbolic-ref", "refs/remotes/origin/HEAD")
+
+	out, err := gitCmd.CombinedOutput()
+
+	if err != nil {
+		return "", err
+	}
+
+	return string(out), nil
+}
+
 func DeleteBranch(branchName string) (string, error) {
 	gitCmd := exec.Command("git", "branch", "-d", branchName)
 
