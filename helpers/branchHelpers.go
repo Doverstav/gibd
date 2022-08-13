@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/AlecAivazis/survey/v2"
+	"github.com/mgutz/ansi"
 )
 
 func GetBranchNames(branches []string) []string {
@@ -51,7 +52,9 @@ func DeleteBranches(branchesToDelete []string) {
 		output, err := DeleteBranch(branch)
 		if err != nil {
 			// If that fails, display error output
-			fmt.Printf("Got this error when deleting branch %s:\n"+"%s\n", branch, output)
+			header := ansi.Color(fmt.Sprintf("Got this error when attempting to delete branch %s:", branch), "red")
+			message := ansi.Color(strings.TrimSpace(output), "yellow")
+			fmt.Printf("\n%s\n%s\n\n", header, message)
 
 			// Ask if user wants to attempt a force delete
 			tryForce := false
@@ -64,7 +67,9 @@ func DeleteBranches(branchesToDelete []string) {
 				// Try to force delete
 				output, err = ForceDeleteBranch(branch)
 				if err != nil {
-					fmt.Printf("Failed to delete branch %s with error %s", branch, output)
+					header := ansi.Color(fmt.Sprintf("Failed to delete branch %s with error:", branch), "red")
+					message := ansi.Color(strings.TrimSpace(output), "yellow")
+					fmt.Printf("\n%s\n%s\n\n", header, message)
 				}
 			}
 		}
