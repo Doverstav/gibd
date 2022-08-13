@@ -20,7 +20,9 @@ Allow user to prune before running delete
 ### Git commands used
 `git for-each-ref --format '%(refname) %(upstream:track)' refs/heads` => Output each branch ref and [gone] if the remote is gone (should language be set to ensure [gone] is shown?)
 
-`got branch -d <branch>` => Delete branch, uses `-D` when doing force delete
+`git branch -d <branch>` => Delete branch, uses `-D` when doing force delete
+
+`git symbolic-ref refs/remotes/origin/HEAD` => Tries to find default branch so it cna be exluded from list of branches. Does not always work.
 
 ## Improvements
 - [X] Pretty error output
