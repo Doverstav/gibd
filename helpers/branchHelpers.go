@@ -1,7 +1,10 @@
 package helpers
 
 import (
+	"fmt"
 	"strings"
+
+	"github.com/AlecAivazis/survey/v2"
 )
 
 func GetBranchNames(branches []string) []string {
@@ -38,4 +41,32 @@ func GetBranchNamesWithRemoteGone(branches []string) []string {
 	}
 
 	return branchNames
+}
+
+func DeleteBranches(branchesToDelete []string) {
+	// For each branch
+	for _, branch := range branchesToDelete {
+		fmt.Printf("Deleting branch %s\n", branch)
+		// Try to delete it
+		output, err := DeleteBranch(branch)
+		if err != nil {
+			// If that fails, display error output
+			fmt.Printf("Got this error when deleting branch %s:\n"+"%s\n", branch, output)
+
+			// Ask if user wants to attempt a force delete
+			tryForce := false
+			survey.AskOne(&survey.Confirm{
+				Message: "Do you wish to try a force delete?",
+			}, &tryForce)
+
+			// If yes
+			if tryForce {
+				// Try to force delete
+				output, err = ForceDeleteBranch(branch)
+				if err != nil {
+					fmt.Printf("Failed to delete branch %s with error %s", branch, output)
+				}
+			}
+		}
+	}
 }

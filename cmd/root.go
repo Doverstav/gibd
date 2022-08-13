@@ -5,7 +5,6 @@ Copyright © 2022 Pontus Doverstav <doverstav@gmail.com>
 package cmd
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/AlecAivazis/survey/v2"
@@ -38,31 +37,33 @@ to quickly create a Cobra application.`,
 			Options: branchNames,
 		}, &branchesToDelete)
 
-		// For each branch
-		for _, branch := range branchesToDelete {
-			fmt.Printf("Deleting branch %s\n", branch)
-			// Try to delete it
-			output, err := helpers.DeleteBranch(branch)
-			if err != nil {
-				// If that fails, display error output
-				fmt.Printf("Got this error when deleting branch %s:\n"+"%s\n", branch, output)
+		helpers.DeleteBranches(branchesToDelete)
 
-				// Ask if user wants to attempt a force delete
-				tryForce := false
-				survey.AskOne(&survey.Confirm{
-					Message: "Do you wish to try a force delete?",
-				}, &tryForce)
+		// // For each branch
+		// for _, branch := range branchesToDelete {
+		// 	fmt.Printf("Deleting branch %s\n", branch)
+		// 	// Try to delete it
+		// 	output, err := helpers.DeleteBranch(branch)
+		// 	if err != nil {
+		// 		// If that fails, display error output
+		// 		fmt.Printf("Got this error when deleting branch %s:\n"+"%s\n", branch, output)
 
-				// If yes
-				if tryForce {
-					// Try to force delete
-					output, err = helpers.ForceDeleteBranch(branch)
-					if err != nil {
-						fmt.Printf("Failed to delete branch %s with error %s", branch, output)
-					}
-				}
-			}
-		}
+		// 		// Ask if user wants to attempt a force delete
+		// 		tryForce := false
+		// 		survey.AskOne(&survey.Confirm{
+		// 			Message: "Do you wish to try a force delete?",
+		// 		}, &tryForce)
+
+		// 		// If yes
+		// 		if tryForce {
+		// 			// Try to force delete
+		// 			output, err = helpers.ForceDeleteBranch(branch)
+		// 			if err != nil {
+		// 				fmt.Printf("Failed to delete branch %s with error %s", branch, output)
+		// 			}
+		// 		}
+		// 	}
+		// }
 
 		return nil
 	},
