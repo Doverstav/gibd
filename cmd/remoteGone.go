@@ -6,6 +6,7 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/doverstav/gibd/helpers"
@@ -22,10 +23,31 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("remoteGone called")
 
-		branches, _ := helpers.GetBranchesWithRemoteStatus()
+		// Get all branch refs
+		branches, err := helpers.GetBranchesWithRemoteStatus()
+		if err != nil {
+			return err
+		}
+
+		// Remove default branch
+		defaultRef, err := helpers.GetDefaultBranchRef()
+		if err != nil {
+			// TODO Support user supplied default branch & remote
+			defaultRef = "refs/remotes/origin/master"
+		}
+		testFunc := func(s string) bool {
+			bSplit := strings.Split(s, "/")
+			bName := strings.TrimSpace(bSplit[len(bSplit)-1])
+			dSplit := strings.Split(defaultRef, "/")
+			dName := strings.TrimSpace(dSplit[len(dSplit)-1])
+
+			return bName != dName
+		}
+		branches = helpers.Filter(branches, testFunc)
+
 		branchNamesWithRemoteGone := helpers.GetBranchNamesWithRemoteGone(branches)
 
 		fmt.Println(branchNamesWithRemoteGone)
@@ -38,6 +60,8 @@ to quickly create a Cobra application.`,
 		}, &branchesToDelete)
 
 		helpers.DeleteBranches(branchesToDelete)
+
+		return nil
 	},
 }
 

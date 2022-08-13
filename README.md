@@ -24,7 +24,7 @@ Allow user to prune before running delete
 
 ## Improvements
 - [X] Pretty error output
-- [ ] Do not include default branch
-    - [ ] Allow user to specify default branch
+- [X] Do not include default branch
+    - [ ] Allow user to specify default branch & remote
     - [ ] Allow user to include main/master
-- [ ]Allow user to prune before running delete
+- [ ] Allow user to prune before running delete

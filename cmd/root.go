@@ -6,6 +6,7 @@ package cmd
 
 import (
 	"os"
+	"strings"
 
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/doverstav/gibd/helpers"
@@ -26,7 +27,27 @@ to quickly create a Cobra application.`,
 	// has an action associated with it:
 	RunE: func(cmd *cobra.Command, args []string) error {
 		// Get all branch refs
-		branches, _ := helpers.GetBranchesWithRemoteStatus()
+		branches, err := helpers.GetBranchesWithRemoteStatus()
+		if err != nil {
+			return err
+		}
+
+		// Remove default branch
+		defaultRef, err := helpers.GetDefaultBranchRef()
+		if err != nil {
+			// TODO Support user supplied default branch & remote
+			defaultRef = "refs/remotes/origin/master"
+		}
+		testFunc := func(s string) bool {
+			bSplit := strings.Split(s, "/")
+			bName := strings.TrimSpace(bSplit[len(bSplit)-1])
+			dSplit := strings.Split(defaultRef, "/")
+			dName := strings.TrimSpace(dSplit[len(dSplit)-1])
+
+			return bName != dName
+		}
+		branches = helpers.Filter(branches, testFunc)
+
 		// Extract all names
 		branchNames := helpers.GetBranchNames(branches)
 
