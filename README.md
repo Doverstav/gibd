@@ -12,10 +12,13 @@ If the force flag is not set and branch cannot be delete, user should be able to
 
 Do not include main/master
 
-Extensions:
+### Extensions to functionality
 Allow user to specify default branch
 Allow user to include main/master
 Allow user to prune before running delete
 
 ### Git commands used
 `git for-each-ref --format '%(refname) %(upstream:track)' refs/heads` => Output each branch ref and [gone] if the remote is gone (should language be set to ensure [gone] is shown?)
+
+## Improvements
+- Pretty error output
