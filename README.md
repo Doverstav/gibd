@@ -22,7 +22,7 @@ Allow user to prune before running delete
 
 `git branch -d <branch>` => Delete branch, uses `-D` when doing force delete
 
-`git symbolic-ref refs/remotes/origin/HEAD` => Tries to find default branch so it cna be exluded from list of branches. Does not always work.
+`git symbolic-ref refs/remotes/origin/HEAD` => Tries to find default branch so it cna be exluded from list of branches. Does not always work. It proably makes more sense to ask the remote, but that takes more time.
 
 ## Improvements
 - [X] Pretty error output
