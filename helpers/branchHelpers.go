@@ -54,7 +54,8 @@ func DeleteBranches(branchesToDelete []string) {
 			// If that fails, display error output
 			header := ansi.Color(fmt.Sprintf("Got this error when attempting to delete branch %s:", branch), "red")
 			message := ansi.Color(strings.TrimSpace(output), "yellow")
-			fmt.Printf("\n%s\n%s\n\n", header, message)
+			reset := ansi.ColorCode("reset")
+			fmt.Printf("\n%s\n%s\n\n%s", header, message, reset)
 
 			// Ask if user wants to attempt a force delete
 			tryForce := false
@@ -69,7 +70,7 @@ func DeleteBranches(branchesToDelete []string) {
 				if err != nil {
 					header := ansi.Color(fmt.Sprintf("Failed to delete branch %s with error:", branch), "red")
 					message := ansi.Color(strings.TrimSpace(output), "yellow")
-					fmt.Printf("\n%s\n%s\n\n", header, message)
+					fmt.Printf("\n%s\n%s\n\n%s", header, message, reset)
 				}
 			}
 		}
