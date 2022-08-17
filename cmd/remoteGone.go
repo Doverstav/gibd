@@ -53,7 +53,7 @@ to quickly create a Cobra application.`,
 			dSplit := strings.Split(defaultRef, "/")
 			dName := strings.TrimSpace(dSplit[len(dSplit)-1])
 
-			return bName != dName
+			return bName != dName && !strings.Contains(bName, dName)
 		}
 		if !includeDefault {
 			branches = helpers.Filter(branches, testFunc)
