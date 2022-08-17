@@ -27,9 +27,10 @@ Allow user to prune before running delete
 ## Improvements
 - [X] Pretty error output
 - [X] Do not include default branch
-    - [ ] Allow user to specify default branch & remote
-    - [ ] Allow user to include main/master
-- [ ] Allow user to prune before running delete
+    - [X] Allow user to specify default branch & remote
+    - [X] Allow user to include main/master
+- [X] Allow user to prune before running delete
 - [ ] Print something if there are no branches to delete
+- [ ] Clean up/keep things DRY
 - [ ] Release with Goreleaser?
     - [ ] Or is it enough to just publish the package?
