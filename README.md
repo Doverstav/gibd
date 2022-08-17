@@ -30,3 +30,6 @@ Allow user to prune before running delete
     - [ ] Allow user to specify default branch & remote
     - [ ] Allow user to include main/master
 - [ ] Allow user to prune before running delete
+- [ ] Print something if there are no branches to delete
+- [ ] Release with Goreleaser?
+    - [ ] Or is it enough to just publish the package?

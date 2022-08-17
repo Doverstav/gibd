@@ -6,6 +6,7 @@ package cmd
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/AlecAivazis/survey/v2"
@@ -26,6 +27,12 @@ to quickly create a Cobra application.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("remoteGone called")
 
+		remoteName := cmd.Flag("remote").Value.String()                // Default origin
+		defaultBranchName := cmd.Flag("default-branch").Value.String() // Default master
+		defaultBranchNameSet := cmd.Flag("default-branch").Changed
+		includeDefault, _ := strconv.ParseBool(cmd.Flag("include-default").Value.String())
+		forceDelete, _ := strconv.ParseBool(cmd.Flag("force").Value.String())
+
 		// Get all branch refs
 		branches, err := helpers.GetBranchesWithRemoteStatus()
 		if err != nil {
@@ -33,10 +40,12 @@ to quickly create a Cobra application.`,
 		}
 
 		// Remove default branch
-		defaultRef, err := helpers.GetDefaultBranchRef()
-		if err != nil {
-			// TODO Support user supplied default branch & remote
-			defaultRef = "refs/remotes/origin/master"
+		defaultRef := defaultBranchName
+		if !defaultBranchNameSet {
+			defaultRef, err = helpers.GetDefaultBranchRef(remoteName)
+			if err != nil {
+				defaultRef = defaultBranchName
+			}
 		}
 		testFunc := func(s string) bool {
 			bSplit := strings.Split(s, "/")
@@ -46,7 +55,9 @@ to quickly create a Cobra application.`,
 
 			return bName != dName
 		}
-		branches = helpers.Filter(branches, testFunc)
+		if !includeDefault {
+			branches = helpers.Filter(branches, testFunc)
+		}
 
 		branchNamesWithRemoteGone := helpers.GetBranchNamesWithRemoteGone(branches)
 
@@ -59,7 +70,11 @@ to quickly create a Cobra application.`,
 			Options: branchNamesWithRemoteGone,
 		}, &branchesToDelete)
 
-		helpers.DeleteBranches(branchesToDelete)
+		if forceDelete {
+			helpers.ForceDeleteBranches(branchesToDelete)
+		} else {
+			helpers.DeleteBranches(branchesToDelete)
+		}
 
 		return nil
 	},
@@ -77,4 +92,6 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// remoteGoneCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+
+	remoteGoneCmd.Flags().BoolP("prune", "p", false, "Prune remote before running command")
 }

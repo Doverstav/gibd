@@ -76,3 +76,17 @@ func DeleteBranches(branchesToDelete []string) {
 		}
 	}
 }
+
+func ForceDeleteBranches(branchesToDelete []string) {
+	// For each branch
+	for _, branch := range branchesToDelete {
+		fmt.Printf("Deleting branch %s\n", branch)
+		output, err := ForceDeleteBranch(branch)
+		if err != nil {
+			header := ansi.Color(fmt.Sprintf("Failed to delete branch %s with error:", branch), "red")
+			message := ansi.Color(strings.TrimSpace(output), "yellow")
+			reset := ansi.ColorCode("reset")
+			fmt.Printf("\n%s\n%s\n\n%s", header, message, reset)
+		}
+	}
+}

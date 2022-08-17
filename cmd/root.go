@@ -6,6 +6,7 @@ package cmd
 
 import (
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/AlecAivazis/survey/v2"
@@ -26,6 +27,13 @@ to quickly create a Cobra application.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	RunE: func(cmd *cobra.Command, args []string) error {
+		// Get all flag values that we want
+		remoteName := cmd.Flag("remote").Value.String()
+		defaultBranchName := cmd.Flag("default-branch").Value.String()
+		defaultBranchNameSet := cmd.Flag("default-branch").Changed
+		includeDefault, _ := strconv.ParseBool(cmd.Flag("include-default").Value.String())
+		forceDelete, _ := strconv.ParseBool(cmd.Flag("force").Value.String())
+
 		// Get all branch refs
 		branches, err := helpers.GetBranchesWithRemoteStatus()
 		if err != nil {
@@ -33,10 +41,12 @@ to quickly create a Cobra application.`,
 		}
 
 		// Remove default branch
-		defaultRef, err := helpers.GetDefaultBranchRef()
-		if err != nil {
-			// TODO Support user supplied default branch & remote
-			defaultRef = "refs/remotes/origin/master"
+		defaultRef := defaultBranchName
+		if !defaultBranchNameSet {
+			defaultRef, err = helpers.GetDefaultBranchRef(remoteName)
+			if err != nil {
+				defaultRef = defaultBranchName
+			}
 		}
 		testFunc := func(s string) bool {
 			bSplit := strings.Split(s, "/")
@@ -46,7 +56,9 @@ to quickly create a Cobra application.`,
 
 			return bName != dName
 		}
-		branches = helpers.Filter(branches, testFunc)
+		if !includeDefault {
+			branches = helpers.Filter(branches, testFunc)
+		}
 
 		// Extract all names
 		branchNames := helpers.GetBranchNames(branches)
@@ -58,7 +70,11 @@ to quickly create a Cobra application.`,
 			Options: branchNames,
 		}, &branchesToDelete)
 
-		helpers.DeleteBranches(branchesToDelete)
+		if forceDelete {
+			helpers.ForceDeleteBranches(branchesToDelete)
+		} else {
+			helpers.DeleteBranches(branchesToDelete)
+		}
 
 		return nil
 	},
@@ -82,5 +98,13 @@ func init() {
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle") // Remove this?
+
+	// Good info to have
+	rootCmd.PersistentFlags().StringP("default-branch", "d", "master", "Name of the default branch")
+	rootCmd.PersistentFlags().StringP("remote", "r", "origin", "Name of the remote")
+
+	// Used by all commands
+	rootCmd.PersistentFlags().BoolP("force", "f", false, "Always force delete branches")
+	rootCmd.PersistentFlags().BoolP("include-default", "i", false, "Include default in list of branches")
 }

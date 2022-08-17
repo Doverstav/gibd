@@ -1,6 +1,7 @@
 package helpers
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
 	"strings"
@@ -22,9 +23,9 @@ func GetBranchesWithRemoteStatus() ([]string, error) {
 	return outArray, nil
 }
 
-func GetDefaultBranchRef() (string, error) {
-	// TODO Allow user to specify remote (is hardcoded to origin now)
-	gitCmd := exec.Command("git", "symbolic-ref", "refs/remotes/origin/HEAD")
+func GetDefaultBranchRef(remoteName string) (string, error) {
+	remoteHEADRef := fmt.Sprintf("refs/remotes/%s/HEAD", remoteName)
+	gitCmd := exec.Command("git", "symbolic-ref", remoteHEADRef)
 
 	out, err := gitCmd.CombinedOutput()
 
