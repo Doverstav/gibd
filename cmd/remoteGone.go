@@ -25,13 +25,20 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("remoteGone called")
-
-		remoteName := cmd.Flag("remote").Value.String()                // Default origin
-		defaultBranchName := cmd.Flag("default-branch").Value.String() // Default master
+		// Get all flag values that we want
+		remoteName := cmd.Flag("remote").Value.String()
+		defaultBranchName := cmd.Flag("default-branch").Value.String()
 		defaultBranchNameSet := cmd.Flag("default-branch").Changed
 		includeDefault, _ := strconv.ParseBool(cmd.Flag("include-default").Value.String())
 		forceDelete, _ := strconv.ParseBool(cmd.Flag("force").Value.String())
+		prune, _ := strconv.ParseBool(cmd.Flag("prune").Value.String())
+
+		if prune {
+			output, err := helpers.PruneRemote(remoteName)
+			if err != nil {
+				fmt.Printf("Could not prune remote \"%s\". Error given was:\n%v", remoteName, output)
+			}
+		}
 
 		// Get all branch refs
 		branches, err := helpers.GetBranchesWithRemoteStatus()
@@ -60,8 +67,6 @@ to quickly create a Cobra application.`,
 		}
 
 		branchNamesWithRemoteGone := helpers.GetBranchNamesWithRemoteGone(branches)
-
-		fmt.Println(branchNamesWithRemoteGone)
 
 		// Ask what branches to delete
 		branchesToDelete := []string{}

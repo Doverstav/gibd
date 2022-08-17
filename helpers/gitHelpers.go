@@ -23,6 +23,14 @@ func GetBranchesWithRemoteStatus() ([]string, error) {
 	return outArray, nil
 }
 
+func PruneRemote(remoteName string) (string, error) {
+	gitCmd := exec.Command("git", "remote", "prune", remoteName)
+
+	out, err := gitCmd.CombinedOutput()
+
+	return string(out), err
+}
+
 func GetDefaultBranchRef(remoteName string) (string, error) {
 	remoteHEADRef := fmt.Sprintf("refs/remotes/%s/HEAD", remoteName)
 	gitCmd := exec.Command("git", "symbolic-ref", remoteHEADRef)
