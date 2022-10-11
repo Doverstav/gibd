@@ -1,6 +1,5 @@
 /*
 Copyright © 2022 Pontus Doverstav <doverstav@gmail.com>
-
 */
 package cmd
 
@@ -18,13 +17,13 @@ import (
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "gibd",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
+	Short: "Interactively delete git branches",
+	Long: `Interactively delete git branches.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+Presents you with a list of branches in which it 
+is easy to delete hte branches that you no longer 
+have any use of, keeping your repository clean and 
+easy to work in.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	RunE: func(cmd *cobra.Command, args []string) error {

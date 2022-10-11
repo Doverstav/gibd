@@ -1,6 +1,5 @@
 /*
 Copyright © 2022 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
@@ -17,13 +16,12 @@ import (
 // remoteGoneCmd represents the remoteGone command
 var remoteGoneCmd = &cobra.Command{
 	Use:   "remote-gone",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Delete branches where the remote is gone",
+	Long: `Delete branches where the remote is gone.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+You might want to prune your remote branches first 
+(or use the -p flag) to ensure that upstream status 
+are up to date.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		// Get all flag values that we want
 		remoteName := cmd.Flag("remote").Value.String()
