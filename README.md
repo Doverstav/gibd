@@ -1,39 +1,37 @@
 # GIBD (git interactive branch delete)
 A small CLI that will allow a user to comfortably delete several git branches.
 
+Inspired by the problem explained in this [stackoverflow question](https://stackoverflow.com/questions/7726949/remove-tracking-branches-no-longer-on-remote), where I found the answers lacking. While they would no doubt work (I have re-used the commands from them in this small CLI), I felt that thay lacked some interactivity. And I also wanted to play around some with Go!
+
+Although this is not a unique idea, a quick search finds that at least [one project](https://github.com/stefanwille/git-branch-delete) has already solved the same issue in a similar way. But this project wasn't about being unique, but about trying some new things (for me) and hopefully learn something!
+
 ## Commands
-Usecases:
-Delete local branches => DONE
-Delete local branches with no remote => DONE
-Delete local branches with no remote & prune remote beforehand => DONE
+Executables can be found under [releases](https://github.com/Doverstav/gibd/releases).
 
-There should be a "force" flag to remove branches even if there is a warning (for example, they haven't been merged) => DONE
-If the force flag is not set and branch cannot be delete, user should be able to interactively select which branch to force delete => DONE
+Run `gibd --help` to get a nice little help message, which will basically repeat what's written here. 
 
-Do not include main/master => DONE
+There are two commands:
+- `gibd`: List all branches expect the default branch
+- `gibd remote-gone`: List all branches with upstream status [gone]
+    - By setting flag `-p`/`--prune` the remote will be pruned first, which should ensure upstream status is set to [gone] on all branches where it should be
 
-### Extensions to functionality
-Allow user to specify default branch => DONE
-Allow user to include main/master => DONE
-Allow user to prune before running delete => DONE
+Both commands also accept some global flags:
+- `-d`: Set the name of the default branch, defalt value master (e.g. `gibd -d main`)
+- `-r`: Set the name of the remote, default value origin (e.g. `gibd -r origin`)
+- `-i`: Set this flag to include the default branch in the list of branches to delete
+- `-f`: Set this flag to force delete branches by default 
 
 ### Git commands used
-`git for-each-ref --format '%(refname) %(upstream:track)' refs/heads` => Output each branch ref and [gone] if the remote is gone (should language be set to ensure [gone] is shown?)
+This project uses Go to run some Git commands on your local machine, so in the interest of transparency I will detail what commands are used (and what they are used for) in this section.
 
-`git branch -d <branch>` => Delete branch, uses `-D` when doing force delete
+`git for-each-ref --format '%(refname) %(upstream:track)' refs/heads`  
+Outputs each branch ref and the upsteam track information (e.g [gone])
 
-`git symbolic-ref refs/remotes/origin/HEAD` => Tries to find default branch so it cna be exluded from list of branches. Does not always work. It proably makes more sense to ask the remote, but that takes more time.
+`git branch -d <branch>`  
+Delete branch, uses `-D` when doing force delete
 
-`git prune remote origin` => Used when pruning the remote before running remote-gone
+`git symbolic-ref refs/remotes/origin/HEAD`  
+Tries to find default branch so it can be exluded from list of branches. Does not always work. It probably makes more sense to ask the remote, but that takes more time.
 
-## Improvements
-- [X] Pretty error output
-- [X] Do not include default branch
-    - [X] Allow user to specify default branch & remote
-    - [X] Allow user to include main/master
-- [X] Allow user to prune before running delete
-- [X] Print something if there are no branches to delete
-- [ ] Fix docs
-- [ ] Clean up/keep things DRY
-- [X] Release with Goreleaser?
-    - [ ] ~~Or is it enough to just publish the package?~~
+`git prune remote origin`  
+Used when pruning the remote before running remote-gone
