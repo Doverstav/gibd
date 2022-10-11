@@ -68,6 +68,10 @@ to quickly create a Cobra application.`,
 
 		branchNamesWithRemoteGone := helpers.GetBranchNamesWithRemoteGone(branches)
 
+		if len(branchNamesWithRemoteGone) == 0 {
+			fmt.Println("No branches to delete")
+		}
+
 		// Ask what branches to delete
 		branchesToDelete := []string{}
 		survey.AskOne(&survey.MultiSelect{

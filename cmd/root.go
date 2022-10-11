@@ -5,6 +5,7 @@ Copyright © 2022 Pontus Doverstav <doverstav@gmail.com>
 package cmd
 
 import (
+	"fmt"
 	"os"
 	"strconv"
 	"strings"
@@ -62,6 +63,10 @@ to quickly create a Cobra application.`,
 
 		// Extract all names
 		branchNames := helpers.GetBranchNames(branches)
+
+		if len(branchNames) == 0 {
+			fmt.Println("No branches to delete")
+		}
 
 		// Ask what branches to delete
 		branchesToDelete := []string{}
